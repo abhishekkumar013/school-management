@@ -4,10 +4,33 @@ import FormModal from "@/components/FormModal";
 // import FormModal from "@/components/FormModal";
 import Performance from "@/components/Performance";
 import { role } from "@/lib/data";
+import prisma from "@/lib/prisma";
+import { Teacher } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 
-const SingleTeacherPage = () => {
+const SingleTeacherPage = async ({
+  params: { id },
+}: {
+  params: { id: string };
+}) => {
+  const teacher:
+    | (Teacher & {
+        _count: { subjects: number; lessons: number; classes: number };
+      })
+    | null = await prisma.teacher.findUnique({
+    where: { id },
+    include: {
+      _count: {
+        select: {
+          subjects: true,
+          lessons: true,
+          classes: true,
+        },
+      },
+    },
+  });
+
   return (
     <div className="flex-1 p-4 flex flex-col gap-4 xl:flex-row">
       {/* LEFT */}
@@ -143,19 +166,34 @@ const SingleTeacherPage = () => {
         <div className="bg-white p-4 rounded-md">
           <h1 className="text-xl font-semibold">Shortcuts</h1>
           <div className="mt-4 flex gap-4 flex-wrap text-xs text-gray-500">
-            <Link className="p-3 rounded-md bg-lamaSkyLight" href="/">
+            <Link
+              className="p-3 rounded-md bg-lamaSkyLight"
+              href={`/list/classes?supervisorId=${teacher.id}`}
+            >
               Teacher&apos;s Classes
             </Link>
-            <Link className="p-3 rounded-md bg-lamaPurpleLight" href="/">
+            <Link
+              className="p-3 rounded-md bg-lamaPurpleLight"
+              href={`/list/students?teacherId=${teacher.id}`}
+            >
               Teacher&apos;s Students
             </Link>
-            <Link className="p-3 rounded-md bg-lamaYellowLight" href="/">
+            <Link
+              className="p-3 rounded-md bg-lamaYellowLight"
+              href={`/list/lessons?teacherId=${teacher.id}`}
+            >
               Teacher&apos;s Lessons
             </Link>
-            <Link className="p-3 rounded-md bg-pink-50" href="/">
+            <Link
+              className="p-3 rounded-md bg-pink-50"
+              href={`/list/exams?teacherId=${teacher.id}`}
+            >
               Teacher&apos;s Exams
             </Link>
-            <Link className="p-3 rounded-md bg-lamaSkyLight" href="/">
+            <Link
+              className="p-3 rounded-md bg-lamaSkyLight"
+              href={`/list/assignments?teacherId=${teacher.id}`}
+            >
               Teacher&apos;s Assignments
             </Link>
           </div>
