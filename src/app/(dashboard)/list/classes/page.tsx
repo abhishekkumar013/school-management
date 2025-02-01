@@ -16,9 +16,9 @@ const ClassListPage = async ({
 }: {
   searchParams: { [key: string]: string | undefined };
 }) => {
-  // const { sessionClaims } =await auth();
+  // const { sessionClaims } = auth();
   // const role = (sessionClaims?.metadata as { role?: string })?.role;
-  const { userId, role } = await getUserAuth();
+  const { role } = await getUserAuth();
 
   const columns = [
     {
