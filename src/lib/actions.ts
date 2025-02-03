@@ -10,6 +10,7 @@ import {
 } from "./formValidationSchemas";
 import prisma from "./prisma";
 import { clerkClient, createClerkClient } from "@clerk/nextjs/server";
+import { getUserAuth } from "./utils";
 // import { Clerk } from "@clerk/clerk-sdk-node";
 // const clerkClient = Clerk({ apiKey: process.env.CLERK_SECRET_KEY });
 
@@ -267,6 +268,7 @@ export const createStudent = async (
     if (classItem && classItem.capacity === classItem._count.students) {
       return { success: false, error: true };
     }
+
     const client = await clerkClient();
     const user = await client.users.createUser({
       username: data.username,
@@ -318,6 +320,8 @@ export const updateStudent = async (
       firstName: data.name,
       lastName: data.surname,
     });
+
+    //TODO:find the student and if  no new image uplad then save the previous one
 
     await prisma.student.update({
       where: {
@@ -379,18 +383,19 @@ export const createExam = async (
   // const role = (sessionClaims?.metadata as { role?: string })?.role;
 
   try {
-    // if (role === "teacher") {
-    //   const teacherLesson = await prisma.lesson.findFirst({
-    //     where: {
-    //       teacherId: userId!,
-    //       id: data.lessonId,
-    //     },
-    //   });
+    const { userId, role } = await getUserAuth();
+    if (role === "teacher") {
+      const teacherLesson = await prisma.lesson.findFirst({
+        where: {
+          teacherId: userId!,
+          id: data.lessonId,
+        },
+      });
 
-    //   if (!teacherLesson) {
-    //     return { success: false, error: true };
-    //   }
-    // }
+      if (!teacherLesson) {
+        return { success: false, error: true };
+      }
+    }
 
     await prisma.exam.create({
       data: {
@@ -417,18 +422,19 @@ export const updateExam = async (
   // const role = (sessionClaims?.metadata as { role?: string })?.role;
 
   try {
-    // if (role === "teacher") {
-    //   const teacherLesson = await prisma.lesson.findFirst({
-    //     where: {
-    //       teacherId: userId!,
-    //       id: data.lessonId,
-    //     },
-    //   });
+    const { userId, role } = await getUserAuth();
+    if (role === "teacher") {
+      const teacherLesson = await prisma.lesson.findFirst({
+        where: {
+          teacherId: userId!,
+          id: data.lessonId,
+        },
+      });
 
-    //   if (!teacherLesson) {
-    //     return { success: false, error: true };
-    //   }
-    // }
+      if (!teacherLesson) {
+        return { success: false, error: true };
+      }
+    }
 
     await prisma.exam.update({
       where: {

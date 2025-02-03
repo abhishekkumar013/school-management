@@ -126,6 +126,7 @@ const StudentListPage = async ({
       }
     }
   }
+  // data fetching
 
   const [data, count] = await prisma.$transaction([
     prisma.student.findMany({

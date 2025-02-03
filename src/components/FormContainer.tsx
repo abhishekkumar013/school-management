@@ -1,6 +1,7 @@
 import prisma from "@/lib/prisma";
 import FormModal from "./FormModal";
-import { role } from "@/lib/data";
+import { auth } from "@clerk/nextjs/server";
+import { getUserAuth } from "@/lib/utils";
 
 export type FormContainerProps = {
   table:
@@ -24,9 +25,10 @@ export type FormContainerProps = {
 const FormContainer = async ({ table, type, data, id }: FormContainerProps) => {
   let relatedData = {};
 
-  //   const { userId, sessionClaims } = auth();
-  //   const role = (sessionClaims?.metadata as { role?: string })?.role;
-  //   const currentUserId = userId;
+  // const { userId, sessionClaims } = auth();
+  // const role = (sessionClaims?.metadata as { role?: string })?.role;
+  // const currentUserId = userId;
+  const { userId: currentUserId, role } = await getUserAuth();
 
   if (type !== "delete") {
     switch (table) {
