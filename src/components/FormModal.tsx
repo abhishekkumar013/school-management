@@ -3,6 +3,7 @@
 import {
   deleteClass,
   deleteExam,
+  deleteLesson,
   deleteStudent,
   deleteSubject,
   deleteTeacher,
@@ -23,7 +24,7 @@ const deleteActionMap = {
   exam: deleteExam,
   // TODO: OTHER DELETE ACTIONS
   parent: deleteSubject,
-  lesson: deleteSubject,
+  lesson: deleteLesson,
   assignment: deleteSubject,
   result: deleteSubject,
   attendance: deleteSubject,
@@ -49,6 +50,12 @@ const ClassForm = dynamic(() => import("./forms/ClassForm"), {
   loading: () => <h1>Loading...</h1>,
 });
 const ExamForm = dynamic(() => import("./forms/ExamForm"), {
+  loading: () => <h1>Loading...</h1>,
+});
+const LessonForm = dynamic(() => import("./forms/LessonForm"), {
+  loading: () => <h1>Loading...</h1>,
+});
+const AssignmentForm = dynamic(() => import("./forms/AssignmentForm"), {
   loading: () => <h1>Loading...</h1>,
 });
 // TODO: OTHER FORMS
@@ -100,7 +107,22 @@ const forms: {
       setOpen={setOpen}
       relatedData={relatedData}
     />
-    // TODO OTHER LIST ITEMS
+  ),
+  lesson: (setOpen, type, data, relatedData) => (
+    <LessonForm
+      type={type}
+      data={data}
+      setOpen={setOpen}
+      relatedData={relatedData}
+    />
+  ),
+  assignment: (setOpen, type, data, relatedData) => (
+    <LessonForm
+      type={type}
+      data={data}
+      setOpen={setOpen}
+      relatedData={relatedData}
+    />
   ),
 };
 
@@ -111,6 +133,27 @@ const FormModal = ({
   id,
   relatedData,
 }: FormContainerProps & { relatedData?: any }) => {
+  // useEffect(() => {
+  //   const handleEscape = (e: KeyboardEvent) => {
+  //     if (e.key === "Escape") setOpen(false);
+  //   };
+
+  //   if (open) {
+  //     document.addEventListener("keydown", handleEscape);
+  //     // Prevent scrolling when modal is open
+  //     document.body.style.overflow = "hidden";
+  //   }
+
+  //   return () => {
+  //     document.removeEventListener("keydown", handleEscape);
+  //     document.body.style.overflow = "unset";
+  //   };
+  // }, [open]);
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
   const size = type === "create" ? "w-8 h-8" : "w-7 h-7";
   const bgColor =
     type === "create"

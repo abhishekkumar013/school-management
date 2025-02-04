@@ -8,6 +8,7 @@ import { Assignment, Class, Prisma, Subject, Teacher } from "@prisma/client";
 import Image from "next/image";
 import { auth } from "@clerk/nextjs/server";
 import { getUserAuth } from "@/lib/utils";
+import FormContainer from "@/components/FormContainer";
 
 type AssignmentList = Assignment & {
   lesson: {
@@ -76,8 +77,8 @@ const AssignmentListPage = async ({
         <div className="flex items-center gap-2">
           {(role === "admin" || role === "teacher") && (
             <>
-              <FormModal table="assignment" type="update" data={item} />
-              <FormModal table="assignment" type="delete" id={item.id} />
+              <FormContainer table="assignment" type="update" data={item} />
+              <FormContainer table="assignment" type="delete" id={item.id} />
             </>
           )}
         </div>
@@ -182,7 +183,7 @@ const AssignmentListPage = async ({
             </button>
             {role === "admin" ||
               (role === "teacher" && (
-                <FormModal table="assignment" type="create" />
+                <FormContainer table="assignment" type="create" />
               ))}
           </div>
         </div>
