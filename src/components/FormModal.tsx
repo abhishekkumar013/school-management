@@ -1,9 +1,11 @@
 "use client";
 
 import {
+  deleteAssignment,
   deleteClass,
   deleteExam,
   deleteLesson,
+  deleteParent,
   deleteStudent,
   deleteSubject,
   deleteTeacher,
@@ -23,9 +25,9 @@ const deleteActionMap = {
   student: deleteStudent,
   exam: deleteExam,
   // TODO: OTHER DELETE ACTIONS
-  parent: deleteSubject,
+  parent: deleteParent,
   lesson: deleteLesson,
-  assignment: deleteSubject,
+  assignment: deleteAssignment,
   result: deleteSubject,
   attendance: deleteSubject,
   event: deleteSubject,
@@ -56,6 +58,9 @@ const LessonForm = dynamic(() => import("./forms/LessonForm"), {
   loading: () => <h1>Loading...</h1>,
 });
 const AssignmentForm = dynamic(() => import("./forms/AssignmentForm"), {
+  loading: () => <h1>Loading...</h1>,
+});
+const ParentForm = dynamic(() => import("./forms/ParentForm"), {
   loading: () => <h1>Loading...</h1>,
 });
 // TODO: OTHER FORMS
@@ -117,7 +122,15 @@ const forms: {
     />
   ),
   assignment: (setOpen, type, data, relatedData) => (
-    <LessonForm
+    <AssignmentForm
+      type={type}
+      data={data}
+      setOpen={setOpen}
+      relatedData={relatedData}
+    />
+  ),
+  parent: (setOpen, type, data, relatedData) => (
+    <ParentForm
       type={type}
       data={data}
       setOpen={setOpen}
