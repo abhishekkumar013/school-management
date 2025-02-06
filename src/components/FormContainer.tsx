@@ -119,7 +119,13 @@ const FormContainer = async ({ table, type, data, id }: FormContainerProps) => {
         });
         relatedData = { parents };
         break;
-
+      case "event":
+        const eventClasses = await prisma.class.findMany({
+          select: { id: true, name: true },
+          orderBy: { name: "asc" },
+        });
+        relatedData = { classes: eventClasses };
+        break;
       default:
         break;
     }
