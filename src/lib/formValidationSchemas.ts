@@ -147,3 +147,25 @@ export const eventSchema = z.object({
 });
 
 export type EventSchema = z.infer<typeof eventSchema>;
+
+export const resultSchema = z.object({
+  id: z.coerce.number().optional(),
+  score: z.coerce
+    .number()
+    .min(0, { message: "Score must be a positive number!" }),
+  examId: z.coerce.number().nullable(),
+  assignmentId: z.coerce.number().nullable(),
+  studentId: z.string().min(1, { message: "Student is required!" }),
+});
+
+export type ResultSchema = z.infer<typeof resultSchema>;
+
+export const announcementSchema = z.object({
+  id: z.coerce.number().optional(),
+  title: z.string().min(1, { message: "Title is required!" }),
+  description: z.string().min(1, { message: "Description is required!" }),
+  date: z.coerce.date(),
+  classId: z.coerce.number().nullable(),
+});
+
+export type AnnouncementSchema = z.infer<typeof announcementSchema>;

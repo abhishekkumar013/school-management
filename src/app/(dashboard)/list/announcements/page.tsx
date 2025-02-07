@@ -1,3 +1,4 @@
+import FormContainer from "@/components/FormContainer";
 import FormModal from "@/components/FormModal";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
@@ -18,10 +19,6 @@ const AnnouncementListPage = async ({
 }: {
   searchParams: { [key: string]: string | undefined };
 }) => {
-  // Move auth check inside the component
-  // const { userId, sessionClaims } = await auth();
-
-  // const role = (sessionClaims?.metadata as { role?: string })?.role;
   const { userId: currentUserId, role } = await getUserAuth();
 
   const columns = [
@@ -64,8 +61,8 @@ const AnnouncementListPage = async ({
         <div className="flex items-center gap-2">
           {role === "admin" && (
             <>
-              <FormModal table="announcement" type="update" data={item} />
-              <FormModal table="announcement" type="delete" id={item.id} />
+              <FormContainer table="announcement" type="update" data={item} />
+              <FormContainer table="announcement" type="delete" id={item.id} />
             </>
           )}
         </div>
@@ -77,6 +74,7 @@ const AnnouncementListPage = async ({
   const p = page ? parseInt(page) : 1;
 
   const query: Prisma.AnnouncementWhereInput = {};
+
   if (queryParams) {
     for (const [key, value] of Object.entries(queryParams)) {
       if (value !== undefined) {
@@ -90,18 +88,21 @@ const AnnouncementListPage = async ({
       }
     }
   }
-  const roleConditions = {
-    teacher: { lessons: { some: { teacherId: currentUserId! } } },
-    student: { students: { some: { id: currentUserId! } } },
-    parent: { students: { some: { parentId: currentUserId! } } },
-  };
 
-  query.OR = [
-    { classId: null },
-    {
-      class: roleConditions[role as keyof typeof roleConditions] || {},
-    },
-  ];
+  if (role !== "admin") {
+    const roleConditions = {
+      teacher: { lessons: { some: { teacherId: currentUserId! } } },
+      student: { students: { some: { id: currentUserId! } } },
+      parent: { students: { some: { parentId: currentUserId! } } },
+    };
+
+    query.OR = [
+      { classId: null },
+      {
+        class: roleConditions[role as keyof typeof roleConditions] || {},
+      },
+    ];
+  }
 
   const [data, count] = await prisma.$transaction([
     prisma.announcement.findMany({
@@ -117,7 +118,6 @@ const AnnouncementListPage = async ({
 
   return (
     <div className="bg-white p-4 rounded-md flex-1 m-4 mt-0">
-      {/* Rest of your JSX */}
       <div className="flex items-center justify-between">
         <h1 className="hidden md:block text-lg font-semibold">
           All Announcements
@@ -132,7 +132,7 @@ const AnnouncementListPage = async ({
               <Image src="/sort.png" alt="" width={14} height={14} />
             </button>
             {role === "admin" && (
-              <FormModal table="announcement" type="create" />
+              <FormContainer table="announcement" type="create" />
             )}
           </div>
         </div>

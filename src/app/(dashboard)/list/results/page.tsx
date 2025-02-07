@@ -70,25 +70,25 @@ const ResultListPage = async ({
 
   const renderRow = (item: ResultList) => (
     <tr
-      key={item.id}
+      key={item?.id}
       className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-lamaPurpleLight"
     >
-      <td className="flex items-center gap-4 p-4">{item.title}</td>
-      <td>{item.studentName + " " + item.studentName}</td>
-      <td className="hidden md:table-cell">{item.score}</td>
+      <td className="flex items-center gap-4 p-4">{item?.title || "-"}</td>
+      <td>{item?.studentName + " " + item?.studentName || "-"}</td>
+      <td className="hidden md:table-cell">{item?.score || "-"}</td>
       <td className="hidden md:table-cell">
-        {item.teacherName + " " + item.teacherSurname}
+        {item?.teacherName + " " + item?.teacherSurname}
       </td>
-      <td className="hidden md:table-cell">{item.className}</td>
+      <td className="hidden md:table-cell">{item?.className || "-"}</td>
       <td className="hidden md:table-cell">
-        {new Intl.DateTimeFormat("en-US").format(item.startTime)}
+        {new Intl.DateTimeFormat("en-US").format(item?.startTime)}
       </td>
       <td>
         <div className="flex items-center gap-2">
           {(role === "admin" || role === "teacher") && (
             <>
               <FormContainer table="result" type="update" data={item} />
-              <FormContainer table="result" type="delete" id={item.id} />
+              <FormContainer table="result" type="delete" id={item?.id} />
             </>
           )}
         </div>
